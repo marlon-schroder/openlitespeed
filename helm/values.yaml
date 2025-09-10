@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: marlonschroder/litespeed:2
+  pullPolicy: IfNotPresent
+  tag: ""
+
+imagePullSecrets: []
+
+adminPassword:
+  secret: openlitespeed-secret
+  key: password
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: my-site.wordpress.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+autoscaling:
+  enabled: false
+
+persistence:
+  enabled: true
+  storageClass: cephfs-triple-class
+  accessMode: ReadWriteMany
+  size: 10Gi
